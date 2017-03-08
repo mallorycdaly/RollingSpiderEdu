@@ -16,3 +16,8 @@
 *.pdf -crlf -diff -merge
 *.jpg -crlf -diff -merge
 *.png -crlf -diff -merge
+
+# MATLAB/Simulink binary formats
+*.mat  binary
+*.mdl  binary
+*.slx  binary
