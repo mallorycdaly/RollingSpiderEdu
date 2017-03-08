@@ -106,151 +106,158 @@ end;
 %% accelerometer, gyro, orientation, motor commands
 visUpdatesAvlble = (RSrun_posVIS(:,2)~=-99);
 
-figure('Name','Sensors, Orientation & Motors','Position',[100 100 600 700]);
-
-%accelerometer
-h(1)=subplot(4,1,1);
-plot(RSrun_sensordata(:,1),RSrun_sensordata(:,2:4))
-ylabel({'IMUaccel $[m/s^2]$'},'Interpreter','latex');
-legend({'$\tilde{a}_x$' '$\tilde{a}_y$' '$\tilde{a}_z$'},'Interpreter','latex');
+% figure('Name','Sensors, Orientation & Motors','Position',[100 100 600 700]);
+% 
+% %accelerometer
+% h(1)=subplot(4,1,1);
+% plot(RSrun_sensordata(:,1),RSrun_sensordata(:,2:4))
+% ylabel({'IMUaccel $[m/s^2]$'},'Interpreter','latex');
+% legend({'$\tilde{a}_x$' '$\tilde{a}_y$' '$\tilde{a}_z$'},'Interpreter','latex');
 % ylim([-12 12])
-
-
-%gyro
-h(2)=subplot(4,1,2);
-plot(RSrun_sensordata(:,1),RSrun_sensordata(:,5:end-2))
-ylabel({'IMUgyro $[rad/s]$'},'Interpreter','latex');
-legend({ '$w_x$' '$w_y$' '$w_z$'},'Interpreter','latex');
+% 
+% 
+% %gyro
+% h(2)=subplot(4,1,2);
+% plot(RSrun_sensordata(:,1),RSrun_sensordata(:,5:end-2))
+% ylabel({'IMUgyro $[rad/s]$'},'Interpreter','latex');
+% legend({ '$w_x$' '$w_y$' '$w_z$'},'Interpreter','latex');
 % ylim([-1 1])
-
-%state estimates
-h(3)=subplot(4,1,3);
-plot(RSrun_states_estim(:,1),RSrun_states_estim(:,5:7),'.-'); hold all;
-plot(RSrun_orient_ref(:,1),RSrun_orient_ref(:,2:end));
-if (any(visUpdatesAvlble))
-    plot(RSrun_posVIS(visUpdatesAvlble,1),RSrun_posVIS(visUpdatesAvlble,5),'o');
-    legend({'yaw $\hat{\psi}$' 'pitch $\hat{\theta}$' 'roll $\hat{\phi}$' '$\psi_{d}$' '$\theta_{d}$' '$\phi_{d}$' '$\hat{\psi}_{VIS}$'  },'Interpreter','latex');
-else
-    legend({'yaw' 'pitch' 'roll' 'yaw_{ref}' 'pitch_{ref}' 'roll_{ref}'});
-end;
-
-ylabel({'orientation $[rad]$'},'Interpreter','latex');
-
+% 
+% %state estimates
+% h(3)=subplot(4,1,3);
+% figure
+% plot(RSrun_states_estim(:,1),RSrun_states_estim(:,5:7),'.-'); hold all;
+% plot(RSrun_orient_ref(:,1),RSrun_orient_ref(:,2:end));
+% if (any(visUpdatesAvlble))
+%     plot(RSrun_posVIS(visUpdatesAvlble,1),RSrun_posVIS(visUpdatesAvlble,5),'o');
+%     legend({'yaw $\hat{\psi}$' 'pitch $\hat{\theta}$' 'roll $\hat{\phi}$' '$\psi_{d}$' '$\theta_{d}$' '$\phi_{d}$' '$\hat{\psi}_{VIS}$'  },'Interpreter','latex');
+% else
+%     legend({'yaw' 'pitch' 'roll' 'yaw_{ref}' 'pitch_{ref}' 'roll_{ref}'});
+% end;
+% 
+% ylabel({'orientation $[rad]$'},'Interpreter','latex');
+% 
 % ylim([-0.3 0.3])
-
-%motorcommands
-h(4)=subplot(4,1,4);
-plot(RSrun_motorcommands(:,1),RSrun_motorcommands(:,2:end));
-ylabel({'motor commands'},'Interpreter','latex');
-xlabel({'t [s]'},'Interpreter','latex');
-legend({'m$_1$' 'm$_2$' 'm$_3$' 'm$_4$'},'Interpreter','latex');
-ylim([-600 600])
-
+% 
+% %motorcommands
+% h(4)=subplot(4,1,4);
+% plot(RSrun_motorcommands(:,1),RSrun_motorcommands(:,2:end));
+% ylabel({'motor commands'},'Interpreter','latex');
+% xlabel({'t [s]'},'Interpreter','latex');
+% legend({'m$_1$' 'm$_2$' 'm$_3$' 'm$_4$'},'Interpreter','latex');
+% ylim([-600 600])
+% 
 % set(h(1:end-1),'xticklabel',[])
 % linkaxes(h,'x');
 
 
 %% Altitude
 
-figure('Name','Altitude');
-
-    
-% altitude from pressure (for comparison only)
-altPrs = (RSrun_sensordata(:,9) - RSrun_sensordataCalib(1,7))/(quadEDT.altToPrs_gain);    
-hold off;
-plot(RSrun_sensordata(:,1), altPrs); hold all;    
-% altitude from sonar
-plot(RSrun_sensordata(:,1), -RSrun_sensordata(:,8),'LineWidth',2);
-
-% altitude from KF
-plot(RSrun_states_estim(:,1),RSrun_states_estim(:,4),'LineWidth',3);
-
-% altitude reference
-plot(RSrun_pos_ref(:,1),RSrun_pos_ref(:,4),'g','LineWidth',2);
-
-% altitude from vision
-visUpdatesAvlble = (RSrun_posVIS(:,2)~=-99);
-plot(RSrun_posVIS(visUpdatesAvlble,1),-RSrun_posVIS(visUpdatesAvlble,4),'o','LineWidth',3);
-
-legend({'Pressure $\hat{z}_{prs}$'  'Sonar $\hat{z}_{snr}$' 'Kalman-estimate $\hat z$' 'Reference $z_{d}$' 'Vision $\hat{z}_{VIS}$' },'Interpreter','latex');
+% figure('Name','Altitude');
+% 
+%     
+% % altitude from pressure (for comparison only)
+% altPrs = (RSrun_sensordata(:,9) - RSrun_sensordataCalib(1,7))/(quadEDT.altToPrs_gain);    
+% hold off;
+% plot(RSrun_sensordata(:,1), altPrs); hold all;    
+% % altitude from sonar
+% plot(RSrun_sensordata(:,1), -RSrun_sensordata(:,8),'LineWidth',2);
+% 
+% % altitude from KF
+% plot(RSrun_states_estim(:,1),RSrun_states_estim(:,4),'LineWidth',3);
+% 
+% % altitude reference
+% plot(RSrun_pos_ref(:,1),RSrun_pos_ref(:,4),'g','LineWidth',2);
+% 
+% % altitude from vision
+% visUpdatesAvlble = (RSrun_posVIS(:,2)~=-99);
+% plot(RSrun_posVIS(visUpdatesAvlble,1),-RSrun_posVIS(visUpdatesAvlble,4),'o','LineWidth',3);
+% 
+% legend({'Pressure $\hat{z}_{prs}$'  'Sonar $\hat{z}_{snr}$' 'Kalman-estimate $\hat z$' 'Reference $z_{d}$' 'Vision $\hat{z}_{VIS}$' },'Interpreter','latex');
 % ylim([-3.5 1]);
-xlabel({'t[s]'},'Interpreter','latex');
-ylabel({'altitude [m]'},'Interpreter','latex');
+% xlabel({'t[s]'},'Interpreter','latex');
+% ylabel({'altitude [m]'},'Interpreter','latex');
 
 %% 2D Position & Velocity
 visUpdatesAvlble = (RSrun_posVIS(:,2)~=-99);
     
-figure('Name','Positions & Velocities','Position',[100 100 600 700]);
-subplot(6,1,1:2);
-
-%Trajectory
-plot(RSrun_states_estim(:,3),RSrun_states_estim(:,2));
-hold all;
-plot(RSrun_states_estim(1,3),RSrun_states_estim(1,2),'rx');
-plot(RSrun_states_estim(end,3),RSrun_states_estim(end,2),'gx');
-plot(RSrun_posVIS(visUpdatesAvlble,3),RSrun_posVIS(visUpdatesAvlble,2),'o-');
-set(gca,'xaxisLocation','top')
-legend({'$\hat{Pos}$','start','finish','$\hat{Pos}_{VIS}$'},'Interpreter', 'latex')
+% figure('Name','Positions & Velocities','Position',[100 100 600 700]);
+% subplot(6,1,1:2);
+% 
+% %Trajectory
+% plot(RSrun_states_estim(:,3),RSrun_states_estim(:,2));
+% hold all;
+% plot(RSrun_states_estim(1,3),RSrun_states_estim(1,2),'rx');
+% plot(RSrun_states_estim(end,3),RSrun_states_estim(end,2),'gx');
+% plot(RSrun_posVIS(visUpdatesAvlble,3),RSrun_posVIS(visUpdatesAvlble,2),'o-');
+% set(gca,'xaxisLocation','top')
+% legend({'$\hat{Pos}$','start','finish','$\hat{Pos}_{VIS}$'},'Interpreter', 'latex')
 % ylim([-.3 .3]);
-xlabel({'$Y$ [m]'},'Interpreter','latex');
-ylabel({'$X$ [m]'},'Interpreter','latex');
-axis equal
+% xlabel({'$Y$ [m]'},'Interpreter','latex');
+% ylabel({'$X$ [m]'},'Interpreter','latex');
+% axis equal
 
 %Positions
-h(1)=subplot(12,1,5:6);
+% h(1)=subplot(12,1,5:6);
+figure
+subplot(3,1,1)
 axis normal
 plot(RSrun_states_estim(:,1),RSrun_states_estim(:,2));hold all;
-plot(RSrun_states_estim(:,1),RSrun_pos_ref(:,2));
-plot(RSrun_posVIS(visUpdatesAvlble,1),RSrun_posVIS(visUpdatesAvlble,2),'o');
-legend({'$\hat{X}$','$X_{ref}$','$\hat{X}_{VIS}$'},'Interpreter','latex')
+plot(RSrun_posVIS(visUpdatesAvlble,1),RSrun_posVIS(visUpdatesAvlble,2),'o'); 
+% legend({'$\hat{X}$','$\hat{X}_{VIS}$'},'Interpreter','latex')
 % ylim([-.7 .7])
-ylabel({'$X$ [m]'},'Interpreter','latex');
+ylabel({'$X$ (m)'},'Interpreter','latex');
 
-h(2)=subplot(12,1,7:8);
+% h(2)=subplot(12,1,7:8);
+subplot(3,1,2)
 plot(RSrun_states_estim(:,1),RSrun_states_estim(:,3));   hold all;
-plot(RSrun_states_estim(:,1),RSrun_pos_ref(:,3));
 plot(RSrun_posVIS(visUpdatesAvlble,1),RSrun_posVIS(visUpdatesAvlble,3),'o');
-legend({'$\hat{Y}$','$Y_{ref}$','$\hat{Y}_{VIS}$'},'Interpreter','latex')
+% legend({'$\hat{Y}$','$\hat{Y}_{VIS}$'},'Interpreter','latex')
 % ylim([-.5 .5])
-ylabel({'$Y$ [m]'},'Interpreter','latex');
+ylabel({'$Y$ (m)'},'Interpreter','latex');
+
+subplot(3,1,3)
+plot(RSrun_states_estim(:,1),RSrun_states_estim(:,4));
+ylabel({'$Z$ (m)'},'Interpreter','latex');
+xlabel({'t (s)'},'Interpreter','latex');
 
 %Velocities
-h(3)=subplot(12,1,9:10);
-plot(RSrun_opticalFlow(:,1),20*RSrun_opticalFlow(:,2),'.-'); hold all;
-plot(RSrun_states_estim(:,1),RSrun_states_estim(:,8));
-ylabel('$\dot x$ [m/s]','Interpreter','latex');
-legend({'$\dot{x}_{opt. flow}$' '$\hat{\dot x}$'},'Interpreter','latex');
-
-h(4)=subplot(12,1,11:12);
-plot(RSrun_opticalFlow(:,1),20*RSrun_opticalFlow(:,3),'.-'); hold all;
-plot(RSrun_states_estim(:,1),RSrun_states_estim(:,9));
-xlabel({'t [s]'},'Interpreter','latex');
-ylabel('$\dot y$ [m/s]','Interpreter','latex');
-legend({'$\dot{y}_{opt. flow}$' '$\hat{\dot y}$'},'Interpreter','latex');
-
+% h(3)=subplot(12,1,9:10);
+% plot(RSrun_opticalFlow(:,1),20*RSrun_opticalFlow(:,2),'.-'); hold all;
+% plot(RSrun_states_estim(:,1),RSrun_states_estim(:,8));
+% ylabel('$\dot x$ [m/s]','Interpreter','latex');
+% legend({'$\dot{x}_{opt. flow}$' '$\hat{\dot x}$'},'Interpreter','latex');
+% 
+% h(4)=subplot(12,1,11:12);
+% plot(RSrun_opticalFlow(:,1),20*RSrun_opticalFlow(:,3),'.-'); hold all;
+% plot(RSrun_states_estim(:,1),RSrun_states_estim(:,9));
+% xlabel({'t [s]'},'Interpreter','latex');
+% ylabel('$\dot y$ [m/s]','Interpreter','latex');
+% legend({'$\dot{y}_{opt. flow}$' '$\hat{\dot y}$'},'Interpreter','latex');
+% 
 % set(h(1:end-1),'xticklabel',[])
 % linkaxes(h,'x');
 
 %% Velocity, Optical Flow
 
-eps = 1e-10;
-figure('Name','Velocity  & Optical flow');
-
-plot(RSrun_opticalFlow(:,1),1/quadEDT.velocityToOpticalFlow_gain*RSrun_opticalFlow(:,2:3),'-'); hold all;
-plot(RSrun_states_estim(:,1),RSrun_states_estim(:,8),'.-');
-plot(RSrun_states_estim(:,1),RSrun_states_estim(:,9),'.-');
-
-legend({'$\dot{x}_{opt. flow}$' '$\dot{y}_{opt. flow}$' '$\dot x$' '$\dot y$'},'Interpreter', 'latex');
-xlabel({'t [s]'},'Interpreter','latex');
-ylabel({'[m/s]'},'Interpreter','latex');
-
-%% Battery status
-if exist('RSrun_batteryStatus','var')
-    
-    figure('Name','Battery voltage');
-
-    plot(RSrun_batteryStatus(:,1),RSrun_batteryStatus(:,3));
-    legend('Battery voltage');
-    xlabel({'t [s]'},'Interpreter','latex');
-    ylabel({'\%'},'Interpreter','latex');
-end;
+% eps = 1e-10;
+% figure('Name','Velocity  & Optical flow');
+% 
+% plot(RSrun_opticalFlow(:,1),1/quadEDT.velocityToOpticalFlow_gain*RSrun_opticalFlow(:,2:3),'-'); hold all;
+% plot(RSrun_states_estim(:,1),RSrun_states_estim(:,8),'.-');
+% plot(RSrun_states_estim(:,1),RSrun_states_estim(:,9),'.-');
+% 
+% legend({'$\dot{x}_{opt. flow}$' '$\dot{y}_{opt. flow}$' '$\dot x$' '$\dot y$'},'Interpreter', 'latex');
+% xlabel({'t [s]'},'Interpreter','latex');
+% ylabel({'[m/s]'},'Interpreter','latex');
+% 
+% %% Battery status
+% if exist('RSrun_batteryStatus','var')
+%     
+%     figure('Name','Battery voltage');
+% 
+%     plot(RSrun_batteryStatus(:,1),RSrun_batteryStatus(:,3));
+%     legend('Battery voltage');
+%     xlabel({'t [s]'},'Interpreter','latex');
+%     ylabel({'\%'},'Interpreter','latex');
+% end;
