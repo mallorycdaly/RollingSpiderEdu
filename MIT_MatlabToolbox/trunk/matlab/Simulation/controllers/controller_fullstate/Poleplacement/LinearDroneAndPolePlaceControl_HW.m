@@ -59,8 +59,8 @@ iW = 1/cos(pitch)*...
 % Linearization point = hover
 %-----------
 state_equil = [0; 0; -1.5; 0; 0; 0; 0; 0; 0; 0; 0; 0]; % x_eq
-% input_equil = [-quad.g*quad.M; 0; 0; 0];               % u_eq (u_p)
-input_equil = M_transform\[-quad.g*quad.M; 0; 0; 0];   % u_eq (u_m)
+input_equil = [-quad.g*quad.M; 0; 0; 0];               % u_eq (u_p)
+% input_equil = M_transform\[-quad.g*quad.M; 0; 0; 0];   % u_eq (u_m)
 equil       = [state_equil; input_equil];
 
 % Dynamics
@@ -152,57 +152,57 @@ G_x = G_X(1,3)
 %
 % TF from tau_x to y
 G_Y = tf(ss(A_dec_y,B_dec_y,eye(size(A_dec_y)),zeros(size(B_dec_y))));
-bode(G_Y)
+G_y = G_Y(1,4)
 
-%%
+% TF from T to z
+G_Z = tf(ss(A_dec_z,B_dec_z,eye(size(A_dec_z)),zeros(size(B_dec_z))));
+G_z = G_Z(1,1)
 
-% TF from ... to z
-G_z = ...
+% TF from tau_z to yaw
+G_Yaw = tf(ss(A_dec_yaw,B_dec_yaw,eye(size(A_dec_yaw)),zeros(size(B_dec_yaw))));
+G_yaw = G_Yaw(1,2)
 
-% TF from ... to yaw
-G_yaw = ...
-    
 % Plot bode plots
 figure
 subplot(2,2,1)
     bode(G_x)
     title('x from \tau_y')
     grid on
+subplot(2,2,2)
+    bode(G_y)
+    title('y from \tau_x')
+    grid on
+subplot(2,2,3)
+    bode(G_z)
+    title('z from T')
+    grid on
+subplot(2,2,4)
+    bode(G_yaw)
+    title('yaw from \tau_z')
+    grid on    
 
-% Now place your own poles for the decoupled subsystems separately
+%% Now place your own poles for the decoupled subsystems separately
 
 xpoles      = [-9+6i;-9-6i;-0.18+1.8i;-0.18-1.8i];
 ypoles      = [-60;-4;-0.16+2i;-0.16-2i];       
 yawpoles    = [-3;-3.1];
-zpoles      = [-2;-2.1];               % Play around with poles here: Slow poles [-2;-2.1], Fast poles [-5;-5.1];
-%zpoles     = [-5;-5.1];               % Play around with poles here: Slow poles [-2;-2.1], Fast poles [-5;-5.1];
+%zpoles      = [-2;-2.1];              % Play around with poles here: Slow poles [-2;-2.1], Fast poles [-5;-5.1];
+zpoles     = [-5;-5.1];               % Play around with poles here: Slow poles [-2;-2.1], Fast poles [-5;-5.1];
 
-K_dec_x     = ...
-K_dec_y     = ...
-K_dec_z     = ...
-K_dec_yaw   = ...
+K_dec_x     = place(A_dec_x, B_dec_x, xpoles);
+K_dec_y     = place(A_dec_y, B_dec_y, ypoles);
+K_dec_z     = place(A_dec_z, B_dec_z, zpoles);
+K_dec_yaw   = place(A_dec_yaw, B_dec_yaw, yawpoles);
 
-
-% Compute Full-state feedback for 'original' system
-K_poleplace = [K_dec_x K_dec_z K_dec_y K_dec_yaw]*inv(Veig_nrm);
+% Compute full-state feedback for 'original' system
+K_poleplace = [K_dec_x K_dec_z K_dec_y K_dec_yaw]*inv(V_eig_nrm);
 K_poleplace(abs(K_poleplace)<1e-7)=0;
 
+%% Evaluate performance
 
-
-% % Now place your own poles for the decoupled subsystems separately
-% 
-% xpoles      = [-9+6i;-9-6i;-0.18+1.8i;-0.18-1.8i];
-% ypoles      = [-60;-4;-0.16+2i;-0.16-2i];       
-% yawpoles    = [-3;-3.1];
-% zpoles      = [-2;-2.1];               % Play around with poles here: Slow poles [-2;-2.1], Fast poles [-5;-5.1];
-% %zpoles     = [-5;-5.1];               % Play around with poles here: Slow
-% %poles [-2;-2.1], Fast poles [-5;-5.1];
-
-% K_dec_x     = ...
-% K_dec_z     = ...
-% K_dec_y     = ...    
-% K_dec_yaw   = ...
-% 
-% % Compute Full-state feedback for 'original' system
-% K_poleplace = [K_dec_x K_dec_z K_dec_y K_dec_yaw]*inv(V_eig_nrm);
-% K_poleplace(abs(K_poleplace)<1e-7)=0;
+figure
+Ahat = A-B*K_poleplace;
+Chat = [eye(4) zeros(4,8)];
+sys = ss(Ahat,[],Chat,[]);
+x0 = [1; 1; 1; 1; zeros(8,1)];
+initial(sys,x0)

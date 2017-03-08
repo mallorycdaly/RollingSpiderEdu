@@ -1,3 +1,5 @@
+function K_lqr_toMotorcmd = fnLQRControl(A,B)
+
 %% Using a linearization of the drone dynamics about hover to design an LQR  hover controller
 % ===============================
 % AUTHOR Fabian Riether
@@ -6,22 +8,26 @@
 % SPECIAL NOTES
 
 %Load drone parameters from RoboticsToolbox
-%mdl_quadrotor
+% [quad, quadEDT] = fn_mdl_quadrotor();
+% mdl_quadrotor
+% NOTE: commented out since not being used in this function
+
+coder.extrinsic('lqr')
 
 %% 1) Linearize Drone Model
 % Use linearizeDrone_motorcmdTostate.slx and Simulink's ControlDesign/
 % Linear Analysis to find a linear plant model.
 
-load('linearizeDrone_hover')
-A = LinearAnalysisToolProject.Results.Data.Value.a;
-B = LinearAnalysisToolProject.Results.Data.Value.b;
+%load('/home/student/RollingSpiderEdu/MIT_MatlabToolbox/trunk/matlab/Simulation/controllers/controller_fullstate/LQR/linearizeDrone_hover')
+% A = LinearAnalysisToolProject.Results.Data.Value.a;
+% B = LinearAnalysisToolProject.Results.Data.Value.b;
 C = eye(12);
 D = zeros(12,4);
  
-%  Note: We linearized about hover. This also implies: The control "policy"
-%  to correct a position error was derived under a yaw-angle of zero!
-%  If your drone yaw-drifts 90 deg and runs into a world-X-error, it will
-%  still believe that pitch is the right answer to correct for this
+% Note: We linearized about hover. This also implies: The control "policy"
+% to correct a position error was derived under a yaw-angle of zero!
+% If your drone yaw-drifts 90 deg and runs into a world-X-error, it will
+% still believe that pitch is the right answer to correct for this
 % position error! You can compensate for this by rotation the X-Y-error by
 % the current yaw angle.
 
@@ -38,23 +44,9 @@ motor_max = 500;
 
 %% Cost weights on states - sluggish control
 
-% pos_x_wght        = 0.1/3;
-% pos_y_wght        = 0.1/3;
-% pos_z_wght        = 0.1/3;
-% 
-% orient_ypr_wghts  = 0.25/3;  % weights for each of the three angles of orientations (attitude)
-% 
-% dpos_wghts        = 0.05/3; % weights for each of the three velocities of position
-% 
-% dorient_pqr_wghts = 0.6/3; % weights for each of the three angular rates of orientations (attitude)
-% 
-% rho = 15;
-
-%% Cost weights on states - faster control
-
-pos_x_wght        = 0.3/3;
-pos_y_wght        = 0.3/3;
-pos_z_wght        = 0.3/3;
+pos_x_wght        = 0.1/3;
+pos_y_wght        = 0.1/3;
+pos_z_wght        = 0.1/3;
 
 orient_ypr_wghts  = 0.25/3;  % weights for each of the three angles of orientations (attitude)
 
@@ -62,7 +54,11 @@ dpos_wghts        = 0.05/3; % weights for each of the three velocities of positi
 
 dorient_pqr_wghts = 0.6/3; % weights for each of the three angular rates of orientations (attitude)
 
-rho = 45;
+rho = 15;
+
+%% Cost weights on states - faster control
+
+% ... 
 
 %% Normalize and pack weights and limits on state costs
 
@@ -77,5 +73,6 @@ R = rho*diag(1./([motor_max motor_max motor_max motor_max].^2)); % weight on com
 
 %% 4) Compute K_LQR
 
-K_lqr_toMotorcmd       = lqr(A,B,Q,R);
+K_lqr_toMotorcmd = zeros(4,12);
+K_lqr_toMotorcmd = lqr(A,B,Q,R);
 K_lqr_toMotorcmd(abs(K_lqr_toMotorcmd)<(1e-8)) = 0;  % set small values zero
