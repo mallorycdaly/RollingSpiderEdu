@@ -18,6 +18,7 @@ startup
 
 % Load linearized drone model
 load('controllers/controller_fullstate/LQR/linearizeDrone_hover')
+load('RSdata_224_30')
 
 %% Run scripts
 
@@ -28,7 +29,7 @@ LQRControl
 %% Run simulation
 
 ts = 30;
-sim('sim_quadrotor.slx')
+% sim('sim_quadrotor.slx')
 
 %% Run flight analyzer
 

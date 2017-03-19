@@ -1240,7 +1240,7 @@ void RSEDU_control(HAL_acquisition_t* hal_sensors_data, HAL_command_t* hal_senso
         {
             powerGain = powerGain_paramsFile;
 	    Drone_Compensator_U_takeoff_flag = 1;  //enables take-off procedure, disables altitude-control
-            Drone_Compensator_U_pos_refin[2] = -1.1;
+            Drone_Compensator_U_pos_refin[2] = -0.6; //-1.1
 	    
 
             //React to possible low battery
