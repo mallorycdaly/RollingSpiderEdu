@@ -11,13 +11,13 @@ close all
 
 %% Run startup
 
-cd /home/student/RollingSpiderEdu/MIT_MatlabToolbox/trunk/matlab/
+cd ../../../../../RollingSpiderEdu/MIT_MatlabToolbox/trunk/matlab/
 startup
 
 %% Load values
 
 % Load linearized drone model
-load('/home/student/RollingSpiderEdu/MIT_MatlabToolbox/trunk/matlab/Simulation/controllers/controller_fullstate/LQR/linearizeDrone_hover')
+load('controllers/controller_fullstate/LQR/linearizeDrone_hover')
 
 %% Run scripts
 
