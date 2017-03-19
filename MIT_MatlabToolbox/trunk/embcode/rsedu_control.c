@@ -1301,47 +1301,47 @@ void RSEDU_control(HAL_acquisition_t* hal_sensors_data, HAL_command_t* hal_senso
 
 
             //Fly in a square that is 1 m by 1 m
-            if(counter >= beginSquare)
-            {
-            	counter_square++;
-
-            	// Go in positive x direction
-            	if(counter_square <= sideCounts)
-            	{
-            		Drone_Compensator_U_pos_refin[0] = (double)(1/(double)sideCounts*(double)counter_square);
-            		//Drone_Compensator_U_pos_refin[1] = 0;
-            	}
-
-            	// Go in positive y direction
-            	else if(counter_square <= 2*sideCounts)
-            	{
-            		Drone_Compensator_U_pos_refin[1] = (double)(1/(double)sideCounts*((double)counter_square - 1*(double)sideCounts));            		
-            	}
-
-            	// Go in negative x direction
-            	else if(counter_square <= 3*sideCounts)
-            	{
-            		Drone_Compensator_U_pos_refin[0] = (double)(1 - 1/(double)sideCounts*((double)counter_square - 2*(double)sideCounts));            		
-            	}
-
-            	// Go in negative y direction
-            	else if(counter_square <= 4*sideCounts)
-            	{
-            		Drone_Compensator_U_pos_refin[1] = (double)(1 - 1/(double)sideCounts*((double)counter_square - 3*(double)sideCounts));            		
-            	}
-
-            	// Set x and y to (0,0)
-            	else
-            	{
-            		Drone_Compensator_U_pos_refin[0] = 0; 
-            		Drone_Compensator_U_pos_refin[1] = 0;            		
-            	}
-
-            	//printf("X_ref = %f  ", Drone_Compensator_U_pos_refin[0]);
-            	//printf("Y_ref = %f  ", Drone_Compensator_U_pos_refin[1]);
-            	//printf("counter_square = %d \n", counter_square);
-
-            }
+//             if(counter >= beginSquare)
+//             {
+//             	counter_square++;
+// 
+//             	// Go in positive x direction
+//             	if(counter_square <= sideCounts)
+//             	{
+//             		Drone_Compensator_U_pos_refin[0] = (double)(1/(double)sideCounts*(double)counter_square);
+//             		//Drone_Compensator_U_pos_refin[1] = 0;
+//             	}
+// 
+//             	// Go in positive y direction
+//             	else if(counter_square <= 2*sideCounts)
+//             	{
+//             		Drone_Compensator_U_pos_refin[1] = (double)(1/(double)sideCounts*((double)counter_square - 1*(double)sideCounts));            		
+//             	}
+// 
+//             	// Go in negative x direction
+//             	else if(counter_square <= 3*sideCounts)
+//             	{
+//             		Drone_Compensator_U_pos_refin[0] = (double)(1 - 1/(double)sideCounts*((double)counter_square - 2*(double)sideCounts));            		
+//             	}
+// 
+//             	// Go in negative y direction
+//             	else if(counter_square <= 4*sideCounts)
+//             	{
+//             		Drone_Compensator_U_pos_refin[1] = (double)(1 - 1/(double)sideCounts*((double)counter_square - 3*(double)sideCounts));            		
+//             	}
+// 
+//             	// Set x and y to (0,0)
+//             	else
+//             	{
+//             		Drone_Compensator_U_pos_refin[0] = 0; 
+//             		Drone_Compensator_U_pos_refin[1] = 0;            		
+//             	}
+// 
+//             	//printf("X_ref = %f  ", Drone_Compensator_U_pos_refin[0]);
+//             	//printf("Y_ref = %f  ", Drone_Compensator_U_pos_refin[1]);
+//             	//printf("counter_square = %d \n", counter_square);
+// 
+//             }
 
             //React to possible Flight abort request
             if(run_flag == 0)
