@@ -2,7 +2,7 @@
 % Load parameters and run scripts needed for the simulation, then run the
 % simulation.
 % Date created: 3/4/17
-% Last updated: 3/4/17
+% Last updated: 3/19/17
 
 %% Clear and close
 clear
@@ -37,7 +37,7 @@ sim('sim_SoftwareIntheLoop_Compensator_R2015b.slx')
 %% Plot results
 plotAltitudeWithSim
 cd ./Lab4
-figName = ['problem7_Q' num2str(estimParams.alt.kf.Q) '_R' num2str(estimParams.alt.kf.R) '.fig'];
+figName = ['problem8_Q' num2str(estimParams.alt.kf.Q) '_Rs' num2str(estimParams.alt.kf.R(1,1)) '_Rp' num2str(estimParams.alt.kf.R(2,2)) '.fig'];
 savefig(figName)
-figName = ['problem7_Q' num2str(estimParams.alt.kf.Q) '_R' num2str(estimParams.alt.kf.R) '.png'];
+figName = ['problem8_Q' num2str(estimParams.alt.kf.Q) '_Rs' num2str(estimParams.alt.kf.R(1,1)) '_Rp' num2str(estimParams.alt.kf.R(2,2)) '.png'];
 print(figName,'-dpng')

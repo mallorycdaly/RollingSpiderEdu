@@ -174,7 +174,8 @@ legend('pressure measurements','sonar measurements','tested KF estimate','sim KF
 xlabel('Time (s)','Interpreter','latex')
 ylabel('Altitude (m)','Interpreter','latex')
 % title
-titleName = ['Simulation values: Q = ' num2str(estimParams.alt.kf.Q) ', R = ' num2str(estimParams.alt.kf.R)];
+titleName = ['Simulation values: Q = ' num2str(estimParams.alt.kf.Q) ', Rs = ' num2str(estimParams.alt.kf.R(1,1)) ', Rp = ' num2str(estimParams.alt.kf.R(2,2))];
+% titleName = ['Simulation values: Q = ' num2str(estimParams.alt.kf.Q) ', R = ' num2str(estimParams.alt.kf.R)];
 title(titleName)
 
 % % altitude from vision

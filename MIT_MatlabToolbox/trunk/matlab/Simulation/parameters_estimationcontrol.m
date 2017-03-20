@@ -38,7 +38,7 @@ estimParams.IMU.filter_accel                                    = designfilt('lo
 estimParams.alt.kf.G            = [0;1];
 estimParams.alt.kf.H            = 0;
 estimParams.alt.kf.Q            = 0.001; %0.0005;
-estimParams.alt.kf.R            = 10; %[0.1];
+estimParams.alt.kf.R            = [2.5 0; 0 10]; %[0.1];
 estimParams.alt.kf.N            = 0;
 
 %outlier Thresholds
