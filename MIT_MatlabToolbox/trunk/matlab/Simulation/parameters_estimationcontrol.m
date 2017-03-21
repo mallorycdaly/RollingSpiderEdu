@@ -42,7 +42,7 @@ estimParams.alt.kf.R            = [0.001 0; 0 3]; %3; %[0.1]; %[2.5 0; 0 10];
 estimParams.alt.kf.N            = 0;
 % These values are input arguments to the Matlab function
 dT = quadEDT.sampletime;
-sigmaW = blkdiag(0.001, 10); %Q
+sigmaW = blkdiag(0.001, 0.001, 3); %Q
 % These values are used to initialize the state and covariance delays
 x0 = [-0.046 0];
 sigmaX0 = zeros(2,2);
