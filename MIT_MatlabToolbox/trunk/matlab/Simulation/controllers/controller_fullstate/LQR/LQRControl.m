@@ -52,9 +52,9 @@ motor_max = 500;
 
 %% Cost weights on states - faster control
 
-pos_x_wght        = 0.3/3;
-pos_y_wght        = 0.3/3;
-pos_z_wght        = 0.3/3;
+pos_x_wght        = 0.2/3;
+pos_y_wght        = 0.2/3;
+pos_z_wght        = 0.4/3;
 
 orient_ypr_wghts  = 0.25/3;  % weights for each of the three angles of orientations (attitude)
 
@@ -62,7 +62,7 @@ dpos_wghts        = 0.05/3; % weights for each of the three velocities of positi
 
 dorient_pqr_wghts = 0.6/3; % weights for each of the three angular rates of orientations (attitude)
 
-rho = 45;
+rho = 30;
 
 %% Normalize and pack weights and limits on state costs
 

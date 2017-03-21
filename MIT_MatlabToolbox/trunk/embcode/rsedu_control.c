@@ -34,10 +34,16 @@ int takeoffCycles	= 200;
 //Parameters for square
 int beginSquare 	= 2000;
 //int beginSquare 	= calibCycles + takeoffCycles + 400;
-//int sideDuration 	= 10; //duration in seconds for the drone to complete a meter-long side of the square
+//int sideDuration 	= 5; //desired duration in seconds for the drone to complete a meter-long side of the square
 int sideCounts 		= 1000; //corresponding number of counts based on 200Hz run time
 //int sideCounts 		= sideDuration*200; //corresponding number of counts based on 200Hz run time
 int counter_square  = 0;
+
+//Paremters for flying up and down
+int beginUpAndDown = 1000;
+int moveCountsSlow = 1000;
+int moveCountsFast = 500;
+int counter_upAndDown = 0;
 
 //-------------------
 //SIMULINK compensator block "Parameter definitions"
@@ -186,22 +192,22 @@ static P_Drone_Compensator_T Drone_Compensator_P = {
   /*  Variable: K_lqr_toMotorcmd
    * Referenced by: '<S5>/K_lqr passed in'
    */
-  { -17.989569074027326, 17.989569074027372, 17.989569074030509,
-    -17.989569074030548, 17.989569074030474, 17.989569074027372,
-    -17.9895690740273, -17.989569074030591, -17.989569074060821,
-    17.989569074000098, -17.989569074060849, 17.989569073993756,
-    -24.985512602773365, -24.985512602862205, -24.985512602773461,
-    -24.985512602862279, 90.932454145651349, -90.932454145651732,
-    -90.932454145667037, 90.932454145667421, 89.101156575589144,
-    89.101156575574876, -89.1011565755747, -89.101156575589386,
-    -17.281003309833586, 17.281003309833707, 17.281003309833011,
-    -17.281003309833128, 17.104432239819246, 17.104432239819896,
-    -17.10443223981985, -17.104432239819321, -30.63509978484047,
-    30.63509978479102, -30.635099784840651, 30.635099784783517,
-    19.399013118048131, 19.399013118041893, -19.399013118041886,
-    -19.399013118048146, 20.29931123002703, -20.29931123002704,
-    -20.299311230035418, 20.299311230035428, -34.88833111326506,
-    -34.888331113451422, -34.888331113265153, -34.888331113451507 },
+  { -14.833138649664582, 14.833138649664651, 14.833138649667536,
+    -14.833138649667609, 14.833138649667516, 14.833138649664589,
+    -14.833138649664507, -14.833138649667568, -29.666277299392306,
+    29.666277299278573, -29.666277299392096, 29.666277299267119,
+    -30.902372186742305, -30.902372186866824, -30.902372186742273,
+    -30.902372186866753, 97.221848132919163, -97.221848132919575,
+    -97.2218481329396, 97.221848132939968, 95.8063169096629, 95.806316909644693,
+    -95.806316909644352, -95.806316909663124, -16.167797811366672,
+    16.167797811366739, 16.167797811365674, -16.167797811365737,
+    16.049076271535125, 16.049076271536226, -16.049076271536148,
+    -16.049076271535188, -39.33714159798123, 39.337141597905529,
+    -39.337141597981187, 39.337141597894473, 23.357959393639803,
+    23.357959393631809, -23.357959393631788, -23.35795939363982,
+    24.160299484282529, -24.16029948428255, -24.160299484293272,
+    24.160299484293294, -40.2016491162612, -40.201649116489868,
+    -40.201649116261123, -40.201649116489776 },
 
   /* Start of '<Root>/Drone_Compensator' */
   {
@@ -378,7 +384,8 @@ static P_Drone_Compensator_T Drone_Compensator_P = {
     /*  Expression: pInitialization.M
      * Referenced by: '<S24>/KalmanGainM'
      */
-    { 0.026241420641871412, 0.0697767360714959 },
+    { 0.095157246742761131, 0.95105705980136523, 3.1719082247587043E-5,
+      0.00031701901993378843 },
 
     /*  Expression: [0 0 quad.g]
      * Referenced by: '<S15>/gravity'
@@ -388,10 +395,12 @@ static P_Drone_Compensator_T Drone_Compensator_P = {
     /*  Expression: pInitialization.C
      * Referenced by: '<S19>/C'
      */
-    { 1.0, 0.0 },
-    0.0,                               /* Expression: pInitialization.D
-                                        * Referenced by: '<S19>/D'
-                                        */
+    { 1.0, 1.0, 0.0, 0.0 },
+
+    /*  Expression: pInitialization.D
+     * Referenced by: '<S19>/D'
+     */
+    { 0.0, 0.0 },
 
     /*  Expression: pInitialization.X0
      * Referenced by: '<S19>/X0'
@@ -472,7 +481,8 @@ static P_Drone_Compensator_T Drone_Compensator_P = {
     /*  Expression: pInitialization.L
      * Referenced by: '<S24>/KalmanGainL'
      */
-    { 0.026590304322228892, 0.0697767360714959 },
+    { 0.099912532041767976, 0.95105705980136523, 3.3304177347255992E-5,
+      0.00031701901993378843 },
 
     /*  Expression: pInitialization.A
      * Referenced by: '<S76>/A'
@@ -1240,7 +1250,7 @@ void RSEDU_control(HAL_acquisition_t* hal_sensors_data, HAL_command_t* hal_senso
         {
             powerGain = powerGain_paramsFile;
 	    Drone_Compensator_U_takeoff_flag = 1;  //enables take-off procedure, disables altitude-control
-            Drone_Compensator_U_pos_refin[2] = -0.6; //-1.1
+            Drone_Compensator_U_pos_refin[2] = -1.1;
 	    
 
             //React to possible low battery
@@ -1261,7 +1271,7 @@ void RSEDU_control(HAL_acquisition_t* hal_sensors_data, HAL_command_t* hal_senso
         else if(counter == calibCycles + takeoffCycles)
         {
 	    Drone_Compensator_U_takeoff_flag = 0;  //disable take-off procedure, disables altitude-control	
-            Drone_Compensator_U_pos_refin[2] = -0.6; //-1.1;
+            Drone_Compensator_U_pos_refin[2] = -1.1;
         }
         //3.3 actual flight setting
         else if(counter < onCycles)
@@ -1342,6 +1352,49 @@ void RSEDU_control(HAL_acquisition_t* hal_sensors_data, HAL_command_t* hal_senso
 //             	//printf("counter_square = %d \n", counter_square);
 // 
 //             }
+
+
+            //Fly up and down at different speeds
+            if(counter >= beginUpAndDown)
+            {
+            	counter_upAndDown++;
+
+            	// Go slowly in positive z direction (down)
+            	if(counter_upAndDown <= moveCountsSlow)
+            	{
+            		Drone_Compensator_U_pos_refin[2] = Drone_Compensator_U_pos_refin[2] + 0.5/(double)moveCountsSlow;
+            	}
+
+            	// Go slowly in negative z direction (up)
+            	else if(counter_upAndDown <= 2*moveCountsSlow)
+            	{
+            		Drone_Compensator_U_pos_refin[2] = Drone_Compensator_U_pos_refin[2] - 0.5/(double)moveCountsSlow;
+            	}
+
+            	// Go quickly in positive z direction (down)
+            	else if(counter_upAndDown <= 2*moveCountsSlow+moveCountsFast)
+            	{
+            		Drone_Compensator_U_pos_refin[2] = Drone_Compensator_U_pos_refin[2] + 0.5/(double)moveCountsFast;
+            	}
+
+            	// Go slowly in negative z direction (up)
+            	else if(counter_upAndDown <= 2*moveCountsSlow+2*moveCountsFast)
+            	{
+            		Drone_Compensator_U_pos_refin[2] = Drone_Compensator_U_pos_refin[2] - 0.5/(double)moveCountsFast;
+            	}
+
+            	// Set x and y to (0,0)
+            	else
+            	{
+            		Drone_Compensator_U_pos_refin[0] = 0; 
+            		Drone_Compensator_U_pos_refin[1] = 0;  
+            	}
+
+            	//printf("X_ref = %f  ", Drone_Compensator_U_pos_refin[0]);
+            	//printf("Y_ref = %f  ", Drone_Compensator_U_pos_refin[1]);
+            	//printf("counter_square = %d \n", counter_square);
+
+            }
 
             //React to possible Flight abort request
             if(run_flag == 0)

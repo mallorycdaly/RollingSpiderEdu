@@ -37,9 +37,15 @@ estimParams.IMU.filter_accel                                    = designfilt('lo
 %KF
 estimParams.alt.kf.G            = [0;1];
 estimParams.alt.kf.H            = 0;
-estimParams.alt.kf.Q            = 0.001; %0.0005;
-estimParams.alt.kf.R            = [2.5 0; 0 10]; %[0.1];
+estimParams.alt.kf.Q            = 0.001; %0.0005
+estimParams.alt.kf.R            = [0.001 0; 0 3]; %3; %[0.1]; %[2.5 0; 0 10];
 estimParams.alt.kf.N            = 0;
+% These values are input arguments to the Matlab function
+dT = quadEDT.sampletime;
+sigmaW = blkdiag(0.001, 10); %Q
+% These values are used to initialize the state and covariance delays
+x0 = [-0.046 0];
+sigmaX0 = zeros(2,2);
 
 %outlier Thresholds
 estimParams.alt.deltaSonarToCurrent_max             = 0.3;
